@@ -1,0 +1,73 @@
+<html>
+<div id="map"></div>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC89u1SmkUMOVrW6QhxDIs2U0Pwuuei4ws&callback=initMap">
+</script>
+<style>
+#map {
+  height: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 80%;
+  margin: 0;
+  padding: 0;
+}
+</style>
+<body>
+<script>
+ var infoWindow;
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 15,
+    center: {lat: 13.5232, lng: 79.9982}
+  });//This is an initialization function which loads the map with center as its coordinates(as mentioned above)
+ 
+var lat={{house_lat}};//These variables are retrieved from views, from the client side to get the house latitude
+var lon={{house_lon}};//These variables are retrieved from views, from the client side to get the house longitude
+var id={{house_id}};//These variables are retrieved from views, from the client side to get the house id
+var inc={{house_inc}};//These variables are retrieved from views, from the client side to get the house income
+var count={{house_count}};//These variables are retrieved from views, from the client side to get the house count
+
+
+console.log(lat);//To verify the latitude values
+console.log(lon);//To verify the longitude values
+
+  	lon.forEach(function(element,index)
+	{
+		var ur;
+		if (inc[index]>=20000)
+			ur="https://image.ibb.co/gXjXDw/circle_256.jpg";//The colour of the house changes as the income varies. This is used for classification.
+			
+		if (inc[index]<=10000)
+			ur="https://image.ibb.co/hfr7fb/circle_xxl.png";//The colour of the house changes as the income varies. This is used for classification.
+		
+		var image = {
+	url: ur,
+	scaledSize: new google.maps.Size(count[index]*20,count[index]*20),//The house size changes based on the number of household members
+	origin: new google.maps.Point(0,0),
+	anchor: new google.maps.Point(0,0)
+}; 
+
+		var marker = new google.maps.Marker({
+    			position: {"lat": lat[index], "lng":lon[index] },//To mark the location of each house
+
+   		        map: map,
+    			icon: image,//image of the house
+ 	 	});
+ 
+		marker.addListener('click', (event)=>{
+
+			var contentString = "House:"+id[index] + ",  House-Income:"+inc[index]+'<img src="https://image.ibb.co/iWEHdw/index.jpg" height="80" weight="80">';//The data(text+image) pops up on clicking it in the info window
+			infoWindow.setContent(contentString);
+			infoWindow.setPosition(event.latLng);
+			infoWindow.open(map);
+		});
+	});
+
+ infoWindow = new google.maps.InfoWindow();//Showing infowindow on google map
+}
+</script>
+</body>
+</html>

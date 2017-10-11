@@ -1,0 +1,154 @@
+<html>
+<div id="map"></div>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC89u1SmkUMOVrW6QhxDIs2U0Pwuuei4ws&callback=initMap">
+</script>
+<style>
+#map {
+  height: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 80%;
+  margin: 0;
+  padding: 0;
+}
+</style>
+<script>
+ var infoWindow;
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 15,
+    center: {lat: 13.5232, lng: 79.9982}
+  });//This is an initialization function which loads the map with center as its coordinates(as mentioned above)
+
+
+var lat1={{well_lat}};//These variables are retrieved from views, from the client side to get the well latitude
+var lon1={{well_lon}};//These variables are retrieved from views, from the client side to get the well longitude
+var id1={{well_id}};//These variables are retrieved from views, from the client side to get the well id
+var farm_id1={{well_farm_id}};//These variables are retrieved from views, from the client side to get the farm id
+var depth1={{well_depth}}//These variables are retrieved from views, from the client side to get the well depth
+var avg_yeild1 = {{well_avg_yeild}}//These variables are retrieved from views, from the client side to get the well average water yield
+  var image = 'https://www.iconexperience.com/_img/i_collection_png/32x32/plain/dug_well.png';
+	lon1.forEach(function(element,index)
+	{
+		 
+		var marker1 = new google.maps.Marker({
+    			position: {"lat": lat1[index], "lng":lon1[index] },//to mark the location of each well
+   		        map: map,
+    			icon: image//image of the well
+ 	 	});
+		marker1.addListener('click', (event)=>{
+
+			var contentString = "Well:"+id1[index] + ",  Well Depth:"+depth1[index]+ ",  Well Yeild:"+avg_yeild1[index]+ ",  Farm id:"+farm_id1[index];//The data(text) pops up on clicking it in the info window
+			infoWindow1.setContent(contentString);
+			infoWindow1.setPosition(event.latLng);
+			infoWindow1.open(map);
+		});
+	});
+
+ infoWindow1 = new google.maps.InfoWindow;
+ // var lat=[13.5232,13.5250];
+ // var long=[79.9982,79.9990];
+var lat={{house_lat}};//These variables are retrieved from views, from the client side to get the house latitude
+var lon={{house_lon}};//These variables are retrieved from views, from the client side to get the house longitude
+var id={{house_id}};//These variables are retrieved from views, from the client side to get the house id
+var inc={{house_inc}};//These variables are retrieved from views, from the client side to get the house image
+var image = 'https://image.ibb.co/iVTyDk/house.png';
+	lon.forEach(function(element,index)
+	{
+		 
+		var marker = new google.maps.Marker({
+    			position: {"lat": lat[index], "lng":lon[index] },//to mark the location of each house
+   		        map: map,
+    			icon: image//image of the house
+ 	 	});
+		marker.addListener('click', (event)=>{
+
+			var contentString = "House:"+id[index] + ",  House-Income:"+inc[index];//The data(text) pops up on clicking it in the info window
+			infoWindow.setContent(contentString);
+			infoWindow.setPosition(event.latLng);
+			infoWindow.open(map);
+		});
+	});
+
+ infoWindow = new google.maps.InfoWindow;
+
+var amsterdam = new google.maps.LatLng(13.395715,79.888916);
+var lat={{farm_lat}};//These variables are retrieved from views, from the client side to get the farm latitude
+var lon={{farm_lon}};//These variables are retrieved from views, from the client side to get the farm longitude
+var id={{farm_id}};//These variables are retrieved from views, from the client side to get the farm id
+var poly=[];
+
+
+    var bounds = new google.maps.LatLngBounds();
+var image = 'https://image.ibb.co/iVTyDk/house.png';
+var points=[]
+for (i=0;i<id.length;i++)
+{
+	p=id[i];
+	for (j=i;j<id.length;j++)
+	{
+		q=id[j];
+		if (p==q)
+		{
+			
+		}
+		else{
+			
+			break;
+		}		
+	}
+	i=j-1;
+	points.push([lat[i],lon[i],id[i]]);//There will different farms with latitude and longitude, we segregate them based on their farm id
+	
+}
+var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+    for (i = 0; i < points.length; i++) { 
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(points[i][0]-0.25, points[i][1]-0.25),
+	animation:google.maps.Animation.BOUNCE,
+        map: map
+      });//The latitude and latitude of the farms are located or marked 
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(String("Farm:"+points[i][2])+'<img src="https://image.ibb.co/dvBmAb/index.jpg" height="80" weight="80">');//The data(text) pops up on clicking it in the info window
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+}
+for (i=0;i<id.length;i++)
+{
+	p=id[i];
+	var l=[];
+	for (j=i;j<id.length;j++)
+	{
+		q=id[j];
+		if (p==q)
+		{
+			l.push({lat:lat[j],lng:lon[j]});
+		}
+		else{
+			break;
+		}		
+	}
+	i=j-1;
+	  var flightPath = new google.maps.Polygon({
+    path: l,
+    strokeColor: "#0000FF",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#0000FF",
+    fillOpacity: 0.4
+  });
+  flightPath.setMap(map);
+	poly.push(l);//the sequence of latitude and longitude of each farm is pushed into poly
+}
+}
+</script>
+</html>
